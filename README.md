@@ -5,7 +5,7 @@ A CLI tool allows you to save everything from your mind and terminal in the comp
   because most of the time, your computer can save data better than you and it can store a lot more data than paper.
 
 ## Features
-  - [ ] store data
+  - [x] store data
   - [ ] simple, easy to use, and time saver CLI
   - [ ] push notification in Linux after startup
   - [ ] your idea...
