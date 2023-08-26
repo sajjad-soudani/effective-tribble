@@ -4,11 +4,7 @@ use entities::{note::ActiveModel, prelude::*, *};
 use sea_orm::*;
 use time::OffsetDateTime;
 
-const DATABASE_URL: &str = "sqlite:./db.sqlite3?mode=rwc";
-const _DB_NAME: &str = "notes_db";
-
-pub async fn insert(title: &String, text: &String) -> Result<InsertResult<ActiveModel>, DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
+pub async fn insert(title: &String, text: &String, db: &DatabaseConnection) -> Result<InsertResult<ActiveModel>, DbErr> {
 
     let note = note::ActiveModel {
         title: ActiveValue::Set(title.to_owned()),
@@ -17,18 +13,17 @@ pub async fn insert(title: &String, text: &String) -> Result<InsertResult<Active
         ..Default::default()
     };
 
-    let res = Note::insert(note).exec(&db).await?;
+    let res = Note::insert(note).exec(db).await?;
 
     Ok(res)
 }
 
-pub async fn set_done(id: i32) -> Result<note::Model, DbErr> {
-    let db = Database::connect(DATABASE_URL).await?;
-    let note: Option<note::Model> = Note::find_by_id(id).one(&db).await?;
+pub async fn set_done(id: i32, db: &DatabaseConnection) -> Result<note::Model, DbErr> {
+    let note: Option<note::Model> = Note::find_by_id(id).one(db).await?;
     let mut note: note::ActiveModel = note.unwrap().into();
     note.done = Set(true);
 
-    let note: note::Model = note.update(&db).await?;
+    let note: note::Model = note.update(db).await?;
 
     Ok(note)
 }
